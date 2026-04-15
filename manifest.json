@@ -1,7 +1,7 @@
 {
-  "name": "Macroni — Kỷ luật calo",
+  "name": "Macroni — Calorie discipline",
   "short_name": "Macroni",
-  "description": "Theo dõi calo với carry-over nợ và kỷ luật tập luyện",
+  "description": "Calorie & macro tracker with one-directional debt carry-over and discipline penalties",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

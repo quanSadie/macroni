@@ -2,68 +2,89 @@
 
 **Live**: https://quansadie.github.io/macroni/
 
-PWA theo dõi calo. Chạy offline, cài lên home screen Android. Dữ liệu lưu ở localStorage.
+Calorie & macro tracker PWA. Runs offline, installs to the home screen, stores everything in `localStorage`. Bilingual (EN / VI).
 
-## Tính năng
+## Why
 
-- **Tính TDEE** (Mifflin–St Jeor) từ chiều cao / cân nặng / tuổi / giới / mức vận động
-- **Gợi ý mức giảm** 0.3 / 0.5 / 0.7 kg/tuần, kèm đánh dấu "bền vững" vs "khắc nghiệt"
-- **Carry-over nợ** (chỉ một chiều): ăn thừa → trừ budget ngày mai. Ăn thiếu → KHÔNG được bù.
-- **Phạt bỏ tập**: bỏ buổi đã lên kế hoạch → −150 kcal budget ngày mai (per buổi bỏ)
-- **Phạt quên log**: ngày quên log auto-fill = TDEE + 200 kcal
-- **Khóa log sau 12h**: không sửa/xóa được log cũ để tránh làm đẹp số
-- **Phạt tuần**: tổng 7 ngày dương (ăn thừa net so với baseBudget) → tuần sau budget giảm 50 kcal/ngày. Cần tối thiểu 4 ngày có log trong tuần trước mới kích hoạt (tránh phạt oan khi mới cài hoặc nghỉ dài)
-- **Sàn BMR**: budget hiển thị không bao giờ xuống dưới BMR. Nợ vẫn cộng dồn bình thường bên trong, chỉ hiển thị cảnh báo khi floor kích hoạt
-- **Reset nợ thủ công**: escape route khi nợ tích lũy bất khả thi (vd. nghỉ 2 tuần). Xác nhận 2 bước (confirm + gõ "RESET"). Mỗi lần reset được ghi lại vĩnh viễn trong Settings
-- **Log calo bài tập theo MET**: `kcal = MET × cân × giờ × hệ số cường độ (thấp 0.85 / vừa 1.0 / cao 1.2)`
-- **Món ăn quen & bài tập quen**: chọn nhanh từ danh sách, hoặc lưu trực tiếp khi log
+Most calorie trackers reset every day — eat 500 over today, tomorrow starts fresh. No consequence, no reward, so users disengage in days.
 
-## Chạy local
+Macroni applies a **one-directional carry-over**: over-eating creates debt that reduces tomorrow's budget. Under-eating *does not* create credit. Every day matters.
 
-Mở `index.html` bằng một static server bất kỳ — không cần build:
+## Features
+
+### Discipline (the core)
+
+- **One-directional debt carry-over**: `D_next = max(0, D + (net − baseBudget))`. Over-eat → tomorrow shrinks. Under-eat → debt pays down (clamped at zero).
+- **Skip penalty**: planning a workout and skipping it costs −150 kcal off tomorrow per skipped item.
+- **Missed-log penalty**: a day with no logs auto-fills as `baseBudget + 200 kcal` — you don't get to forget for free.
+- **12-hour log lock**: can't edit or delete logs after 12 h. No retroactive prettying-up.
+- **Weekly reckoning**: if last 7 days net positive vs baseBudget, every day next week loses 50 kcal. Needs ≥4 logged days in the prior week to fire.
+- **BMR floor**: displayed budget never drops below your BMR — eating below BMR is unsafe.
+- **Manual debt reset**: escape hatch when accumulated debt becomes unrealistic. Two-step confirm (`confirm()` + typing `RESET`). Every reset is logged permanently in Settings.
+
+### Goal-based planning
+
+You don't pick a deficit. Enter target weight + timeframe; the app derives daily deficit, daily budget, and weekly rate. Live feedback classifies the plan as **sustainable / aggressive / unhealthy**, with explicit warnings for sub-BMR budgets or rates above 1 kg/week.
+
+On every weigh-in, the deficit recomputes against the new weight + remaining time — falling behind schedule shifts you into a more aggressive bracket and surfaces a warning.
+
+### Food
+
+- USDA FoodData Central search built in (CORS-friendly). Pick → form auto-fills with kcal + protein/carbs/fat per 100 g. Change grams → everything rescales.
+- Star button on each search hit: save to favorites in one tap.
+- Favorites as inline chips in the add dialog.
+- Macros: protein/carbs/fat. Protein has a goal (`1.6 × bodyweight` default, overridable) with a progress bar; C/F shown as totals only.
+
+### Workouts
+
+**Cardio** — auto-detected MET from a built-in lookup (running, cycling, swimming, HIIT, boxing…). Calories: `MET × weight × hours × intensity_mult`.
+
+**Gym** — session-based with sets × reps × kg:
+- Per exercise: name + a list of `{ reps, kg }` sets
+- Calories: `Σ (reps × effective_kg) × 0.05`, where `effective_kg = max(kg, bodyweight × 0.4)` (the floor handles bodyweight exercises)
+- Save sessions as templates; one tap prefills every exercise with last-used sets
+
+### Body tracking
+
+- Quick weigh-in (⚖ in topbar) with optional photo (compressed to ~50–150 KB JPEG)
+- Sparkline trend in History (last 30 weigh-ins)
+- Auto-recompute alert when weight changes ≥2 kg between logs
+- 3-column progress photo gallery, tap to view full
+
+### Activity heatmap
+
+GitHub-style 365-day heatmap, two modes: food-log days and training days.
+
+## Install on Android
+
+Open the live URL in Chrome → menu (⋮) → **Install app**. Full-screen, offline, native-feeling icon.
+
+## Run locally
 
 ```bash
-# Một trong các cách sau:
 npx serve .
+# or
 python -m http.server 8000
 ```
 
-Service Worker chỉ hoạt động qua `http(s)://` hoặc `localhost`, không dùng `file://`.
+Service worker requires `http(s)://` or `localhost` — `file://` won't register the SW but the app still runs.
 
-## Cài lên Android (để dùng như app)
+## Configuring discipline rules
 
-1. Mở URL đã deploy bằng Chrome trên Android
-2. Chrome sẽ hiện banner "Thêm vào Màn hình chính" (hoặc menu `⋮` → "Install app")
-3. App xuất hiện trên home screen — mở full-screen, chạy offline, icon riêng
-
-## Công thức
-
-- **BMR (Mifflin–St Jeor)**:
-  - Nam: `10×kg + 6.25×cm − 5×tuổi + 5`
-  - Nữ: `10×kg + 6.25×cm − 5×tuổi − 161`
-- **TDEE**: `BMR × hệ số vận động` (1.2 / 1.375 / 1.55 / 1.725 / 1.9)
-- **Budget cơ bản**: `TDEE − daily_deficit`
-- **Budget thực tế hôm nay**: `baseBudget − nợ_cộng_dồn − phạt_bỏ_tập − phạt_tuần`
-- **Cập nhật nợ cuối ngày**: `D_next = max(0, D + (net − baseBudget))`
-
-## Cấu trúc file
-
-```
-index.html     # UI
-app.js         # toàn bộ logic (vanilla JS, ~600 dòng)
-styles.css     # mobile-first dark theme
-manifest.json  # PWA manifest
-sw.js          # service worker (cache-first offline)
-icon.svg       # app icon
-```
-
-## Tuỳ chỉnh rule
-
-Sửa các hằng số ở đầu `app.js`:
+Five tunable constants at the top of `app.js`:
 
 ```js
 const LOCK_HOURS = 12;
 const SKIP_PENALTY = 150;
 const MISSED_DAY_SURPLUS = 200;
 const WEEKLY_OVERAGE_PENALTY = 50;
+const WEEKLY_MIN_DAYS = 4;
 ```
+
+## Stack
+
+Vanilla JavaScript / HTML / CSS. No framework, no build step, no dependencies. Deliberately kept that way — easier to audit, easier to host.
+
+## License
+
+MIT.
