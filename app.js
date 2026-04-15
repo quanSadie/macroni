@@ -116,13 +116,22 @@ function fmtDate(key) {
 }
 
 // ---------- TDEE ----------
+// Use Katch-McArdle when body fat % is known (more accurate for athletic users
+// because it scales BMR off lean mass). Fall back to Mifflin-St Jeor otherwise.
 function calcBMR(p) {
+  if (p.bodyFat && p.bodyFat > 0 && p.bodyFat < 60) {
+    const lbm = p.weight * (1 - p.bodyFat / 100);
+    return Math.round(370 + 21.6 * lbm);
+  }
   // Mifflin-St Jeor
   const { weight, height, age, gender } = p;
   const s = gender === 'male' ? 5 : -161;
   return Math.round(10 * weight + 6.25 * height - 5 * age + s);
 }
 function calcTDEE(p) { return Math.round(calcBMR(p) * p.activity); }
+function bmrFormulaUsed(p) {
+  return (p.bodyFat && p.bodyFat > 0 && p.bodyFat < 60) ? 'katch_mcardle' : 'mifflin';
+}
 
 // 7700 kcal ≈ 1kg of body fat.
 const KCAL_PER_KG = 7700;
@@ -444,6 +453,9 @@ function initOnboarding() {
     const p = readOnboardForm();
     tdeeComputed = calcTDEE(p);
     $('ob-tdee').textContent = tdeeComputed;
+    const formula = bmrFormulaUsed(p);
+    const fmtEl = document.getElementById('ob-formula');
+    if (fmtEl) fmtEl.textContent = t(formula === 'katch_mcardle' ? 'formula_katch' : 'formula_mifflin');
     // Prefill target = current - 5kg as starting suggestion
     if (!$('ob-target').value) $('ob-target').value = Math.max(40, p.weight - 5);
     $('ob-result').classList.remove('hidden');
@@ -473,12 +485,14 @@ function initOnboarding() {
   };
 }
 function readOnboardForm() {
+  const bf = +document.getElementById('ob-bodyfat').value;
   return {
     gender: document.getElementById('ob-gender').value,
     age: +document.getElementById('ob-age').value,
     height: +document.getElementById('ob-height').value,
     weight: +document.getElementById('ob-weight').value,
     activity: +document.getElementById('ob-activity').value,
+    bodyFat: bf > 0 ? bf : null,
   };
 }
 
@@ -1412,6 +1426,7 @@ function openSettings() {
   document.getElementById('set-height').value = p.height;
   document.getElementById('set-activity').value = p.activity;
   document.getElementById('set-gender').value = p.gender;
+  document.getElementById('set-bodyfat').value = p.bodyFat || '';
   document.getElementById('set-target').value = p.targetWeight || '';
   const weeksLeft = p.targetDate ? Math.max(1, Math.round(diffDays(todayKey(), p.targetDate) / 7)) : 12;
   document.getElementById('set-weeks').value = weeksLeft;
@@ -1425,12 +1440,14 @@ function openSettings() {
 
 function renderSettingsFeedback() {
   const fb = document.getElementById('set-feedback');
+  const bf = +document.getElementById('set-bodyfat').value;
   const profile = {
     gender: document.getElementById('set-gender').value,
     age: +document.getElementById('set-age').value,
     height: +document.getElementById('set-height').value,
     weight: +document.getElementById('set-weight').value,
     activity: +document.getElementById('set-activity').value,
+    bodyFat: bf > 0 ? bf : null,
     targetWeight: +document.getElementById('set-target').value,
     targetDate: weeksFromNow(+document.getElementById('set-weeks').value || 12),
   };
@@ -1534,6 +1551,8 @@ function wire() {
     p.height = +document.getElementById('set-height').value;
     p.activity = +document.getElementById('set-activity').value;
     p.gender = document.getElementById('set-gender').value;
+    const bf = +document.getElementById('set-bodyfat').value;
+    p.bodyFat = bf > 0 ? bf : null;
     const target = +document.getElementById('set-target').value;
     const weeks = +document.getElementById('set-weeks').value || 12;
     if (target > 0) {
@@ -1555,7 +1574,7 @@ function wire() {
   };
 
   // Live feedback in settings
-  ['set-weight', 'set-age', 'set-height', 'set-activity', 'set-gender', 'set-target', 'set-weeks'].forEach(id => {
+  ['set-weight', 'set-age', 'set-height', 'set-activity', 'set-gender', 'set-bodyfat', 'set-target', 'set-weeks'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('input', renderSettingsFeedback);
   });

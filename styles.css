@@ -172,6 +172,16 @@ button.icon-btn {
   color: var(--muted);
 }
 .tdee-box b { color: var(--accent); font-size: 20px; font-weight: 800; }
+.tdee-formula { margin-top: 2px; font-size: 11px; }
+
+/* Body fat reference image inside disclosure */
+.bf-ref { padding: 0 12px 12px; }
+.bf-ref img {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+  margin-bottom: 8px;
+}
 
 .goal-feedback {
   margin: 10px 0 16px;

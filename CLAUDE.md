@@ -177,10 +177,18 @@ Rendering: cardio items show as a single line. Gym items render with an expandab
 
 ## TDEE formula
 
-Mifflin–St Jeor:
+Two BMR formulas — `calcBMR(profile)` switches based on whether `profile.bodyFat` is set.
+
+**Katch-McArdle** (preferred when body fat % is known — more accurate for athletic users since it scales off lean mass instead of total weight):
+- `LBM = weight × (1 − bodyFat/100)`
+- `BMR = 370 + 21.6 × LBM`
+- Gender-agnostic.
+
+**Mifflin–St Jeor** (fallback when no body fat input):
 - Male:   `10×kg + 6.25×cm − 5×age + 5`
 - Female: `10×kg + 6.25×cm − 5×age − 161`
-- TDEE = BMR × activity multiplier (1.2 / 1.375 / 1.55 / 1.725 / 1.9)
+
+`TDEE = BMR × activity_multiplier` (1.2 / 1.375 / 1.55 / 1.725 / 1.9). The visual reference image (`bodyfatpercentage.png`) is shown inside a disclosure on both onboarding and Settings → Profile so users can self-estimate without calipers.
 
 ## Goal-based planning
 

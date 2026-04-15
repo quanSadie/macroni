@@ -43,11 +43,25 @@
       </label>
     </div>
 
+    <label><span data-i18n="body_fat_label">—</span>
+      <input id="ob-bodyfat" type="number" inputmode="decimal" min="2" max="60" step="0.1" placeholder="—" />
+    </label>
+    <details class="disclosure sub">
+      <summary data-i18n="body_fat_visual">— <span class="chev">▸</span></summary>
+      <div class="bf-ref">
+        <img src="bodyfatpercentage.png" alt="Body fat reference" />
+        <p class="muted tiny" data-i18n="body_fat_note">—</p>
+      </div>
+    </details>
+
     <button id="ob-calc" class="primary" data-i18n="calc_tdee">—</button>
 
     <div id="ob-result" class="hidden">
       <div class="tdee-box">
-        <span data-i18n="your_tdee">—</span>
+        <div>
+          <span data-i18n="your_tdee">—</span>
+          <div class="tdee-formula muted tiny" id="ob-formula"></div>
+        </div>
         <b><span id="ob-tdee">0</span> kcal</b>
       </div>
       <p class="muted" data-i18n="goal_lead_new">—</p>
@@ -201,6 +215,16 @@
           <option value="female" data-i18n="female">—</option>
         </select>
       </label>
+      <label><span data-i18n="body_fat_label">—</span>
+        <input id="set-bodyfat" type="number" inputmode="decimal" min="2" max="60" step="0.1" placeholder="—" />
+      </label>
+      <details class="disclosure sub">
+        <summary data-i18n="body_fat_visual">— <span class="chev">▸</span></summary>
+        <div class="bf-ref">
+          <img src="bodyfatpercentage.png" alt="Body fat reference" />
+          <p class="muted tiny" data-i18n="body_fat_note">—</p>
+        </div>
+      </details>
 
       <h3 data-i18n="goal_section">—</h3>
       <div class="row">

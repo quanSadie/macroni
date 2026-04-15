@@ -1,4 +1,4 @@
-const CACHE = 'macroni-v11';
+const CACHE = 'macroni-v12';
 const ASSETS = [
   './',
   './index.html',
@@ -7,6 +7,7 @@ const ASSETS = [
   './i18n.js',
   './manifest.json',
   './icon.svg',
+  './bodyfatpercentage.png',
 ];
 
 self.addEventListener('install', e => {
