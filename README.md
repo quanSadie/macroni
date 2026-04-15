@@ -1,5 +1,7 @@
 # Macroni
 
+**Live**: https://quansadie.github.io/macroni/
+
 PWA theo dõi calo với carry-over kỷ luật. Chạy offline, cài lên home screen Android như app native. Dữ liệu lưu ở localStorage (không gửi đi đâu).
 
 ## Tính năng
