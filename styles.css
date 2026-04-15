@@ -854,8 +854,8 @@ button.icon-btn {
   -webkit-overflow-scrolling: touch;
 }
 .heatmap {
-  width: 700px;
-  height: 100px;
+  width: 780px;
+  height: 116px;
   display: block;
 }
 .hm.lv0 { fill: #1c2532; }
@@ -863,6 +863,16 @@ button.icon-btn {
 .hm.lv2 { fill: #2d7a3f; }
 .hm.lv3 { fill: #3fa855; }
 .hm.lv4 { fill: #4ade80; }
+.hm.hm-today {
+  stroke: #fbbf24;
+  stroke-width: 1.5;
+  paint-order: stroke;
+}
+.hm-axis {
+  fill: var(--muted);
+  font-size: 9px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
 .heatmap-legend {
   display: flex;
   align-items: center;

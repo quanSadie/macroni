@@ -765,7 +765,7 @@ function renderHeatmap() {
   const active = document.querySelector('.htab.active');
   const mode = active ? active.dataset.heat : 'track';
 
-  // Build last 365 days
+  // Build last 365 days (cells[0] = oldest, last = today).
   const today = todayKey();
   const cells = [];
   for (let i = 364; i >= 0; i--) {
@@ -774,7 +774,6 @@ function renderHeatmap() {
     let level = 0;
     if (day) {
       if (mode === 'track') {
-        // Count meals logged (ignore autoFilled)
         if (!day.autoFilled) {
           const n = day.meals.length;
           level = n === 0 ? 0 : n === 1 ? 1 : n === 2 ? 2 : n === 3 ? 3 : 4;
@@ -790,8 +789,7 @@ function renderHeatmap() {
   // Group into weeks (columns). Start from the Sunday before oldest cell.
   const [y0, m0, d0] = cells[0].key.split('-').map(Number);
   const firstDt = new Date(y0, m0 - 1, d0);
-  const firstDow = firstDt.getDay(); // 0=Sun
-  // Pad front with empty cells so first column aligns
+  const firstDow = firstDt.getDay();
   const padded = [];
   for (let i = 0; i < firstDow; i++) padded.push(null);
   padded.push(...cells);
@@ -800,19 +798,46 @@ function renderHeatmap() {
   for (let i = 0; i < padded.length; i += 7) weeks.push(padded.slice(i, i + 7));
 
   const COL = 12, GAP = 2;
-  const W = weeks.length * (COL + GAP);
-  const H = 7 * (COL + GAP);
+  const LEFT = 26;           // width reserved for day-of-week labels
+  const TOP = 16;            // height reserved for month labels
+  const W = LEFT + weeks.length * (COL + GAP);
+  const H = TOP + 7 * (COL + GAP);
 
   let totalActive = 0;
   cells.forEach(c => { if (c.level > 0) totalActive++; });
 
+  const months = t('months_short'); // ['Jan', 'Feb', ...] or ['T1',...]
+  const dows = t('dow_short') || t('dow'); // short day names
+
   const svg = [`<svg class="heatmap" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMinYMin meet">`];
+
+  // Month labels: place over the first week that contains a new month.
+  let lastMonth = -1;
+  weeks.forEach((week, wi) => {
+    const firstRealCell = week.find(c => c);
+    if (!firstRealCell) return;
+    const m = +firstRealCell.key.split('-')[1];
+    if (m !== lastMonth) {
+      lastMonth = m;
+      const x = LEFT + wi * (COL + GAP);
+      svg.push(`<text x="${x}" y="11" class="hm-axis">${months[m - 1]}</text>`);
+    }
+  });
+
+  // Day-of-week labels (Mon, Wed, Fri — positions 1, 3, 5 where 0=Sunday).
+  [1, 3, 5].forEach(di => {
+    const y = TOP + di * (COL + GAP) + COL - 2;
+    svg.push(`<text x="0" y="${y}" class="hm-axis">${dows[di]}</text>`);
+  });
+
+  // Cells
   weeks.forEach((week, wi) => {
     week.forEach((c, di) => {
       if (!c) return;
-      const x = wi * (COL + GAP);
-      const y = di * (COL + GAP);
-      svg.push(`<rect x="${x}" y="${y}" width="${COL}" height="${COL}" rx="2" class="hm lv${c.level}"><title>${c.key}</title></rect>`);
+      const x = LEFT + wi * (COL + GAP);
+      const y = TOP + di * (COL + GAP);
+      const isToday = c.key === today;
+      svg.push(`<rect x="${x}" y="${y}" width="${COL}" height="${COL}" rx="2" class="hm lv${c.level}${isToday ? ' hm-today' : ''}"><title>${c.key}</title></rect>`);
     });
   });
   svg.push('</svg>');
@@ -822,6 +847,12 @@ function renderHeatmap() {
     <div class="heatmap-stats">${t('heat_summary', { n: totalActive, mode: modeLabel })}</div>
     <div class="heatmap-scroll">${svg.join('')}</div>
   `;
+
+  // Auto-scroll to today (rightmost cell)
+  const scroller = wrap.querySelector('.heatmap-scroll');
+  if (scroller) {
+    requestAnimationFrame(() => { scroller.scrollLeft = scroller.scrollWidth; });
+  }
 }
 
 function renderPhotoGallery() {

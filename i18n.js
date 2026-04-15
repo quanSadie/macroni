@@ -219,6 +219,8 @@ const I18N = {
 
     // Days
     dow: ['CN','T2','T3','T4','T5','T6','T7'],
+    dow_short: ['CN','T2','T3','T4','T5','T6','T7'],
+    months_short: ['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12'],
   },
   en: {
     app_name: 'Macroni',
@@ -421,6 +423,8 @@ const I18N = {
     session_summary: '{n} exercises · {sets} sets · {min} min',
 
     dow: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+    dow_short: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+    months_short: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
   },
 };
 

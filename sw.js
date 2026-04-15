@@ -1,4 +1,4 @@
-const CACHE = 'macroni-v12';
+const CACHE = 'macroni-v13';
 const ASSETS = [
   './',
   './index.html',
