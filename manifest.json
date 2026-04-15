@@ -1,0 +1,14 @@
+{
+  "name": "Macroni — Kỷ luật calo",
+  "short_name": "Macroni",
+  "description": "Theo dõi calo với carry-over nợ và kỷ luật tập luyện",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0f14",
+  "theme_color": "#0b0f14",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

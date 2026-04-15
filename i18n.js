@@ -1,0 +1,443 @@
+'use strict';
+
+const I18N = {
+  vi: {
+    app_name: 'Macroni',
+    app_tagline: 'Kỷ luật calo',
+
+    // Onboarding
+    ob_lead: 'Thiết lập hồ sơ để tính TDEE và mức giảm phù hợp.',
+    gender: 'Giới tính',
+    male: 'Nam',
+    female: 'Nữ',
+    age: 'Tuổi',
+    height_cm: 'Chiều cao (cm)',
+    weight_kg: 'Cân nặng (kg)',
+    activity: 'Mức vận động',
+    act_1: 'Ít vận động',
+    act_2: 'Nhẹ (1-3 buổi/tuần)',
+    act_3: 'Vừa (3-5 buổi/tuần)',
+    act_4: 'Nhiều (6-7 buổi/tuần)',
+    act_5: 'Rất nhiều (2 buổi/ngày)',
+    calc_tdee: 'Tính TDEE',
+    your_tdee: 'TDEE',
+    goal_lead: 'Chọn mục tiêu giảm cân — deficit lớn hơn = giảm nhanh hơn nhưng khó bền.',
+    goal_lead_new: 'Nhập cân mục tiêu và thời gian — app sẽ tự tính budget và protein.',
+    target_weight: 'Cân mục tiêu (kg)',
+    target_weeks: 'Trong (tuần)',
+    goal_section: 'Mục tiêu',
+    start: 'Bắt đầu',
+    kg_per_week: 'kg / tuần',
+    kcal_per_day_budget: 'kcal/ngày → budget',
+    sustainable: 'Bền vững',
+    harsh: 'Khắc nghiệt, dễ nản',
+    day: 'ngày',
+    fb_budget: 'Budget',
+    fb_deficit: 'Deficit',
+    fb_rate: 'Mức thay đổi',
+    fb_protein: 'Protein / ngày',
+    plan_sustainable: '✓ Bền vững — mức giảm hợp lý, dễ duy trì.',
+    plan_slow: '✓ Chậm nhưng an toàn — thời gian dài, ít áp lực.',
+    plan_aggressive: '⚠ Khá khắc nghiệt — dễ nản, dễ mất cơ. Cân nhắc kéo dài thời gian.',
+    plan_too_fast: '🛑 Quá nhanh (>1kg/tuần) — không lành mạnh. Kéo dài thời gian.',
+    plan_below_bmr: '🛑 Budget dưới BMR — nguy hiểm cho sức khỏe. Kéo dài thời gian hoặc giảm mục tiêu.',
+    plan_maintain: '✓ Duy trì cân hiện tại.',
+
+    // Main
+    kcal_remaining: 'kcal còn lại',
+    consumed: 'nạp',
+    burned: 'đốt',
+    budget: 'budget',
+    streak_start: 'Bắt đầu streak hôm nay',
+    streak_n: 'Streak {n} ngày',
+
+    // Tabs
+    tab_food: 'Ăn',
+    tab_workout: 'Tập',
+    tab_history: 'Lịch sử',
+
+    // Meals
+    no_meals: 'Chưa có bữa ăn nào hôm nay',
+    add_meal: '+ Ăn gì đó',
+    add_meal_title: 'Thêm bữa ăn',
+    food_name: 'Tên món',
+    kcal: 'Calo (kcal)',
+    save_as_fav: 'Lưu vào mục quen',
+    favorites: 'Món quen',
+    tap_to_pick: 'Nhấn để chọn nhanh',
+
+    // Workouts
+    no_workouts: 'Chưa log buổi tập nào hôm nay',
+    add_workout: '+ Tập gì đó',
+    add_workout_title: 'Thêm bài tập',
+    plan_workout_title: 'Lên kế hoạch tập',
+    exercise_name: 'Tên bài',
+    met: 'MET',
+    duration_min: 'Thời gian (phút)',
+    intensity: 'Cường độ',
+    low: 'Thấp',
+    medium: 'Vừa',
+    high: 'Cao',
+    planned_today: 'Buổi tập dự kiến',
+    plan_cta: '+ Lên kế hoạch',
+    plan_note: 'Bỏ buổi đã lên kế hoạch: −{p} kcal ngày mai.',
+    logged_workouts: 'Đã tập',
+    done: 'Xong',
+    uncheck: 'Bỏ check',
+    completed: 'Đã hoàn thành',
+    planned_not_done: 'Chưa tập — bỏ sẽ bị phạt −{p} kcal',
+    minutes: 'phút',
+
+    // Penalty box
+    debt: 'Nợ',
+    skipped: 'Bỏ tập',
+    weekly: 'Phạt tuần',
+    bmr_floor: '⚠ Sàn BMR: budget lẽ ra {raw}, đã nâng lên {floor} để an toàn',
+
+    // History
+    weight_empty: 'Chưa có dữ liệu cân nặng. Nhấn ⚖ ở góc trên để cân.',
+    trend_need_more: 'cần ≥2 lần cân để tính xu hướng',
+    section_activity: 'Hoạt động',
+    heat_track: 'Log calo',
+    heat_workout: 'Tập luyện',
+    heat_summary: '{n} ngày {mode} trong 365 ngày qua',
+    heat_legend_low: 'Ít',
+    heat_legend_high: 'Nhiều',
+    section_photos: 'Tiến trình ảnh',
+    photos_empty: 'Chưa có ảnh. Đính kèm ảnh khi cân để xem progress.',
+    section_daily_log: 'Nhật ký ngày',
+    history_empty: 'Chưa có lịch sử',
+
+    // Weigh-in
+    weigh_title: 'Cân hôm nay',
+    photo_optional: 'Ảnh progress (tuỳ chọn)',
+    photo_selected: 'Đã chọn: {name}',
+    photo_read_error: 'Không đọc được ảnh. Lưu chỉ cân nặng.',
+    weight_changed_alert: 'Cân đổi {from} → {to} kg. TDEE {oldT} → {newT}, budget đã cập nhật tự động.',
+    delete_photo: 'Xóa ảnh này',
+    confirm_delete_photo: 'Xóa ảnh này?',
+
+    // Settings
+    settings: 'Cài đặt',
+    profile: 'Hồ sơ',
+    set_tab_profile: 'Hồ sơ',
+    set_tab_favs: 'Món & Bài quen',
+    set_tab_advanced: 'Khác',
+    deficit_per_day: 'Deficit (kcal/ngày)',
+    save_profile: 'Lưu hồ sơ',
+    profile_saved_budget: 'Đã lưu. Budget mới: {b} kcal/ngày',
+    language: 'Ngôn ngữ',
+    favs_foods: 'Món ăn quen',
+    favs_exercises: 'Bài tập quen',
+    fav_name: 'Tên',
+    fav_met_hint: 'Đi bộ 3.5 · Chạy 8 · Đạp xe 7 · Bơi 7 · Tạ 5 · Yoga 3 · HIIT 8',
+    add_fav_food: '+ Thêm món',
+    add_fav_ex: '+ Thêm bài',
+
+    // Debt reset
+    reset_debt_section: 'Reset nợ carry-over',
+    reset_debt_desc: 'Escape route khi nợ tích lũy quá lớn. Mỗi lần reset được ghi lại vĩnh viễn.',
+    reset_debt_btn: 'Reset nợ (xác nhận 2 bước)',
+    reset_history_empty: 'Chưa reset nợ lần nào. Giữ streak kỷ luật.',
+    reset_history_summary: 'Đã reset {n} lần · tổng {total} kcal đã bỏ qua',
+    reset_entry: '{date} — xóa {k} kcal nợ',
+    reset_confirm_1: 'Reset {k} kcal nợ? Lần reset này sẽ được ghi lại vĩnh viễn.',
+    reset_confirm_2: 'Nhập chính xác "RESET" (hoa) để xác nhận:',
+    reset_mismatch: 'Không khớp. Đã hủy.',
+    reset_success: 'Đã reset {k} kcal nợ. Bắt đầu lại.',
+    reset_no_debt: 'Không có nợ để reset.',
+
+    // Danger
+    danger: 'Nguy hiểm',
+    wipe_all: 'Xóa toàn bộ dữ liệu',
+    wipe_confirm: 'Xóa toàn bộ dữ liệu? Không thể hoàn tác.',
+
+    // Dialog
+    cancel: 'Hủy',
+    ok: 'OK',
+    close: 'Đóng',
+
+    // Misc
+    auto_filled: '(Quên log — phạt mặc định)',
+    no_favorites: 'Chưa có món/bài nào quen. Lưu khi thêm lần sau.',
+
+    // Food search
+    protein: 'Protein',
+    carbs: 'Carbs',
+    fat: 'Fat',
+    protein_target_label: 'Mục tiêu Protein (g)',
+    protein_hint: 'Mặc định 1.6 × cân',
+
+    search_db: 'Tìm trong cơ sở dữ liệu (USDA)',
+    search_placeholder: 'Vd: banana, chicken, rice, oats...',
+    search: 'Tìm',
+    searching: 'Đang tìm...',
+    search_no_results: 'Không tìm thấy. Dùng tiếng Anh cho kết quả tốt nhất.',
+    search_error: 'Lỗi {code}. Thử lại hoặc nhập thủ công.',
+    search_rate_limit: 'Hết lượt (DEMO_KEY giới hạn 10/giờ). Tạo key free ở Cài đặt.',
+    usda_key_label: 'USDA API key (tuỳ chọn)',
+    usda_key_hint: 'DEMO_KEY chỉ 10 lượt/giờ. Key free 1000/giờ: đăng ký ở api.data.gov/signup',
+    grams: 'Gram (g)',
+    per_100g: '{k} kcal / 100g',
+    or_manual: 'hoặc nhập thủ công',
+    save_to_favs_aria: 'Lưu vào mục quen',
+    saved_to_favs: 'Đã lưu: {name}',
+    already_in_favs: 'Món này đã có trong mục quen.',
+    manual_entry: 'Tự nhập',
+    show_macros: 'Thêm P/C/F',
+    hide_macros: 'Ẩn P/C/F',
+
+    // Workout type
+    workout_type: 'Loại tập',
+    type_cardio: 'Cardio',
+    type_gym: 'Gym / Tạ',
+    met_auto: 'MET tự nhận diện: {m}',
+    met_manual: 'MET tự nhập',
+
+    // Gym session
+    session_name: 'Tên buổi tập',
+    session_placeholder: 'Vd: Push day, Pull day, Legs...',
+    total_duration: 'Tổng thời gian (phút)',
+    exercises: 'Bài tập',
+    exercise_placeholder: 'Vd: Bench press',
+    add_exercise: '+ Thêm bài',
+    add_set: '+ Thêm set',
+    reps: 'Rep',
+    kg: 'kg',
+    set_n: 'Set {n}',
+    gym_kcal_note: '≈ {k} kcal · volume {v} kg (reps × kg, sàn 40% cân)',
+    total_duration_optional: 'Thời gian (phút, tuỳ chọn)',
+    no_exercises: 'Chưa có bài nào — thêm bài đầu tiên',
+    session_favorites: 'Buổi quen',
+    save_session: 'Lưu buổi này làm template',
+    session_summary: '{n} bài · {sets} set · {min} phút',
+
+    // Days
+    dow: ['CN','T2','T3','T4','T5','T6','T7'],
+  },
+  en: {
+    app_name: 'Macroni',
+    app_tagline: 'Calorie discipline',
+
+    ob_lead: 'Set up your profile to compute TDEE and a suitable deficit.',
+    gender: 'Gender',
+    male: 'Male',
+    female: 'Female',
+    age: 'Age',
+    height_cm: 'Height (cm)',
+    weight_kg: 'Weight (kg)',
+    activity: 'Activity level',
+    act_1: 'Sedentary',
+    act_2: 'Light (1-3 sessions/week)',
+    act_3: 'Moderate (3-5 sessions/week)',
+    act_4: 'High (6-7 sessions/week)',
+    act_5: 'Very high (2 sessions/day)',
+    calc_tdee: 'Calculate TDEE',
+    your_tdee: 'TDEE',
+    goal_lead: 'Pick a cut target — bigger deficit = faster loss but harder to sustain.',
+    goal_lead_new: 'Enter target weight and timeframe — the app computes budget and protein.',
+    target_weight: 'Target weight (kg)',
+    target_weeks: 'In (weeks)',
+    goal_section: 'Goal',
+    start: 'Start',
+    kg_per_week: 'kg / week',
+    kcal_per_day_budget: 'kcal/day → budget',
+    sustainable: 'Sustainable',
+    harsh: 'Harsh, easy to quit',
+    day: 'day',
+    fb_budget: 'Budget',
+    fb_deficit: 'Deficit',
+    fb_rate: 'Rate',
+    fb_protein: 'Protein / day',
+    plan_sustainable: '✓ Sustainable — reasonable rate, easy to maintain.',
+    plan_slow: '✓ Slow but safe — longer timeline, less pressure.',
+    plan_aggressive: '⚠ Quite harsh — easy to quit, risk muscle loss. Consider extending.',
+    plan_too_fast: '🛑 Too fast (>1kg/week) — not healthy. Extend the timeline.',
+    plan_below_bmr: '🛑 Budget below BMR — harmful. Extend timeline or raise target.',
+    plan_maintain: '✓ Maintaining current weight.',
+
+    kcal_remaining: 'kcal left',
+    consumed: 'in',
+    burned: 'out',
+    budget: 'budget',
+    streak_start: 'Start a streak today',
+    streak_n: '{n}-day streak',
+
+    tab_food: 'Food',
+    tab_workout: 'Train',
+    tab_history: 'History',
+
+    no_meals: 'No meals logged today',
+    add_meal: '+ Log food',
+    add_meal_title: 'Add meal',
+    food_name: 'Food name',
+    kcal: 'Calories (kcal)',
+    save_as_fav: 'Save to favorites',
+    favorites: 'Favorites',
+    tap_to_pick: 'Tap to quick-pick',
+
+    no_workouts: 'No workouts logged today',
+    add_workout: '+ Log workout',
+    add_workout_title: 'Add workout',
+    plan_workout_title: 'Plan a workout',
+    exercise_name: 'Exercise name',
+    met: 'MET',
+    duration_min: 'Duration (min)',
+    intensity: 'Intensity',
+    low: 'Low',
+    medium: 'Medium',
+    high: 'High',
+    planned_today: 'Planned for today',
+    plan_cta: '+ Plan workout',
+    plan_note: 'Skipped planned workout: −{p} kcal tomorrow.',
+    logged_workouts: 'Done',
+    done: 'Done',
+    uncheck: 'Undo',
+    completed: 'Completed',
+    planned_not_done: 'Not done yet — skipping costs −{p} kcal',
+    minutes: 'min',
+
+    debt: 'Debt',
+    skipped: 'Skipped',
+    weekly: 'Weekly',
+    bmr_floor: '⚠ BMR floor: raw budget {raw}, raised to {floor} for safety',
+
+    weight_empty: 'No weight data yet. Tap ⚖ at the top to weigh in.',
+    trend_need_more: 'need ≥2 weigh-ins to show trend',
+    section_activity: 'Activity',
+    heat_track: 'Food log',
+    heat_workout: 'Training',
+    heat_summary: '{n} days of {mode} in the last 365',
+    heat_legend_low: 'Less',
+    heat_legend_high: 'More',
+    section_photos: 'Progress photos',
+    photos_empty: 'No photos yet. Attach one when weighing in.',
+    section_daily_log: 'Daily log',
+    history_empty: 'No history yet',
+
+    weigh_title: 'Weigh in',
+    photo_optional: 'Progress photo (optional)',
+    photo_selected: 'Selected: {name}',
+    photo_read_error: 'Could not read photo. Saved weight only.',
+    weight_changed_alert: 'Weight changed {from} → {to} kg. TDEE {oldT} → {newT}, budget updated automatically.',
+    delete_photo: 'Delete this photo',
+    confirm_delete_photo: 'Delete this photo?',
+
+    settings: 'Settings',
+    profile: 'Profile',
+    set_tab_profile: 'Profile',
+    set_tab_favs: 'Favorites',
+    set_tab_advanced: 'More',
+    deficit_per_day: 'Deficit (kcal/day)',
+    save_profile: 'Save profile',
+    profile_saved_budget: 'Saved. New budget: {b} kcal/day',
+    language: 'Language',
+    favs_foods: 'Favorite foods',
+    favs_exercises: 'Favorite exercises',
+    fav_name: 'Name',
+    fav_met_hint: 'Walking 3.5 · Running 8 · Cycling 7 · Swimming 7 · Weights 5 · Yoga 3 · HIIT 8',
+    add_fav_food: '+ Add food',
+    add_fav_ex: '+ Add exercise',
+
+    reset_debt_section: 'Reset carry-over debt',
+    reset_debt_desc: 'Escape route when accumulated debt becomes unreasonable. Every reset is recorded permanently.',
+    reset_debt_btn: 'Reset debt (2-step confirm)',
+    reset_history_empty: 'No resets yet. Keep the discipline streak.',
+    reset_history_summary: 'Reset {n} times · {total} kcal skipped in total',
+    reset_entry: '{date} — erased {k} kcal of debt',
+    reset_confirm_1: 'Reset {k} kcal of debt? This will be recorded permanently.',
+    reset_confirm_2: 'Type "RESET" (uppercase) exactly to confirm:',
+    reset_mismatch: 'Mismatch. Cancelled.',
+    reset_success: 'Reset {k} kcal of debt. Starting over.',
+    reset_no_debt: 'No debt to reset.',
+
+    danger: 'Danger',
+    wipe_all: 'Wipe all data',
+    wipe_confirm: 'Wipe all data? Cannot be undone.',
+
+    cancel: 'Cancel',
+    ok: 'OK',
+    close: 'Close',
+
+    auto_filled: '(Missed log — default penalty)',
+    no_favorites: 'No favorites saved yet. Tick "save" when adding next time.',
+
+    protein: 'Protein',
+    carbs: 'Carbs',
+    fat: 'Fat',
+    protein_target_label: 'Protein target (g)',
+    protein_hint: 'Default 1.6 × body weight',
+
+    search_db: 'Search database (USDA)',
+    search_placeholder: 'e.g., banana, Greek yogurt, chicken breast...',
+    search: 'Search',
+    searching: 'Searching...',
+    search_no_results: 'No results. Try a different term or enter manually.',
+    search_error: 'Error {code}. Retry or enter manually.',
+    search_rate_limit: 'Rate limited (DEMO_KEY = 10/hour). Add your free key in Settings.',
+    usda_key_label: 'USDA API key (optional)',
+    usda_key_hint: 'DEMO_KEY is 10/hour only. Free key gives 1000/hour: sign up at api.data.gov/signup',
+    grams: 'Grams (g)',
+    per_100g: '{k} kcal / 100g',
+    or_manual: 'or enter manually',
+    save_to_favs_aria: 'Save to favorites',
+    saved_to_favs: 'Saved: {name}',
+    already_in_favs: 'This item is already in favorites.',
+    manual_entry: 'Enter manually',
+    show_macros: 'Add P/C/F',
+    hide_macros: 'Hide P/C/F',
+
+    workout_type: 'Workout type',
+    type_cardio: 'Cardio',
+    type_gym: 'Gym / Weights',
+    met_auto: 'MET auto-detected: {m}',
+    met_manual: 'MET (manual)',
+
+    session_name: 'Session name',
+    session_placeholder: 'e.g., Push day, Pull day, Legs...',
+    total_duration: 'Total duration (min)',
+    exercises: 'Exercises',
+    exercise_placeholder: 'e.g., Bench press',
+    add_exercise: '+ Add exercise',
+    add_set: '+ Add set',
+    reps: 'Reps',
+    kg: 'kg',
+    set_n: 'Set {n}',
+    gym_kcal_note: '≈ {k} kcal · volume {v} kg (reps × kg, floored at 40% bw)',
+    total_duration_optional: 'Duration (min, optional)',
+    no_exercises: 'No exercises yet — add your first',
+    session_favorites: 'Saved sessions',
+    save_session: 'Save as template',
+    session_summary: '{n} exercises · {sets} sets · {min} min',
+
+    dow: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+  },
+};
+
+function currentLang() {
+  if (typeof state !== 'undefined' && state && state.lang) return state.lang;
+  const nav = (navigator.language || 'vi').toLowerCase();
+  return nav.startsWith('en') ? 'en' : 'vi';
+}
+function t(key, params) {
+  const dict = I18N[currentLang()] || I18N.vi;
+  let s = dict[key];
+  if (s === undefined) s = I18N.vi[key] !== undefined ? I18N.vi[key] : key;
+  if (params && typeof s === 'string') {
+    s = s.replace(/\{(\w+)\}/g, (_, k) => params[k] !== undefined ? params[k] : `{${k}}`);
+  }
+  return s;
+}
+function applyI18n(root = document) {
+  root.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  root.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder));
+  });
+  root.querySelectorAll('[data-i18n-aria]').forEach(el => {
+    el.setAttribute('aria-label', t(el.dataset.i18nAria));
+  });
+  // Update <html lang>
+  document.documentElement.lang = currentLang();
+}

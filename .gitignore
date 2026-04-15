@@ -1,0 +1,19 @@
+# Claude Code local session state (user-specific, not for commit)
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Dependencies / build (none yet, but future-proof)
+node_modules/
+dist/
+build/
+.cache/

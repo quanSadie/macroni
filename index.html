@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<meta name="theme-color" content="#0b0f14" />
+<title>Macroni</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="icon.svg" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- Onboarding -->
+<section id="onboarding" class="screen hidden">
+  <div class="onboard-wrap">
+    <h1 data-i18n="app_name">Macroni</h1>
+    <p class="lead" data-i18n="ob_lead">—</p>
+
+    <label><span data-i18n="gender">—</span>
+      <select id="ob-gender">
+        <option value="male" data-i18n="male">—</option>
+        <option value="female" data-i18n="female">—</option>
+      </select>
+    </label>
+
+    <div class="row">
+      <label><span data-i18n="age">—</span> <input id="ob-age" type="number" inputmode="numeric" min="10" max="100" value="25" /></label>
+      <label><span data-i18n="height_cm">—</span> <input id="ob-height" type="number" inputmode="numeric" min="120" max="230" value="170" /></label>
+    </div>
+
+    <div class="row">
+      <label><span data-i18n="weight_kg">—</span> <input id="ob-weight" type="number" inputmode="decimal" min="30" max="250" step="0.1" value="70" /></label>
+      <label><span data-i18n="activity">—</span>
+        <select id="ob-activity">
+          <option value="1.2" data-i18n="act_1">—</option>
+          <option value="1.375" selected data-i18n="act_2">—</option>
+          <option value="1.55" data-i18n="act_3">—</option>
+          <option value="1.725" data-i18n="act_4">—</option>
+          <option value="1.9" data-i18n="act_5">—</option>
+        </select>
+      </label>
+    </div>
+
+    <button id="ob-calc" class="primary" data-i18n="calc_tdee">—</button>
+
+    <div id="ob-result" class="hidden">
+      <div class="tdee-box">
+        <span data-i18n="your_tdee">—</span>
+        <b><span id="ob-tdee">0</span> kcal</b>
+      </div>
+      <p class="muted" data-i18n="goal_lead_new">—</p>
+      <div class="row">
+        <label><span data-i18n="target_weight">—</span> <input id="ob-target" type="number" inputmode="decimal" step="0.1" /></label>
+        <label><span data-i18n="target_weeks">—</span> <input id="ob-weeks" type="number" inputmode="numeric" value="12" min="1" max="260" /></label>
+      </div>
+      <div id="ob-feedback" class="goal-feedback"></div>
+      <button id="ob-save" class="primary" data-i18n="start">—</button>
+    </div>
+  </div>
+</section>
+
+<!-- Main app -->
+<section id="app" class="screen hidden">
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="date" id="today-label">—</div>
+      <div class="muted tiny" id="streak-label">—</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="quick-weigh" data-i18n-aria="weigh_title" aria-label="—">⚖</button>
+      <button class="icon-btn" id="open-settings" data-i18n-aria="settings" aria-label="—">⚙</button>
+    </div>
+  </header>
+
+  <!-- Main ring + inline stats -->
+  <div class="ring-card">
+    <svg class="ring" viewBox="0 0 120 120">
+      <circle class="ring-bg" cx="60" cy="60" r="52" />
+      <circle class="ring-fg" id="ring-fg" cx="60" cy="60" r="52" />
+    </svg>
+    <div class="ring-center">
+      <div class="kcal-remaining" id="kcal-remaining">0</div>
+      <div class="muted tiny" data-i18n="kcal_remaining">—</div>
+    </div>
+    <div class="ring-stats">
+      <div><small data-i18n="consumed">—</small><b id="sum-consumed">0</b></div>
+      <div><small data-i18n="burned">—</small><b id="sum-burned">0</b></div>
+      <div><small data-i18n="budget">—</small><b id="sum-budget">0</b></div>
+    </div>
+  </div>
+
+  <!-- Protein bar + inline carbs/fat -->
+  <div class="macros-inline">
+    <div class="protein-strip">
+      <div class="ps-label"><span data-i18n="protein">—</span><span><b id="pro-current">0</b>/<span id="pro-target">0</span>g</span></div>
+      <div class="macros-bar"><div id="pro-fill" class="macros-fill"></div></div>
+    </div>
+    <div class="cf-chips">
+      <span class="cf c"><b id="macro-c">0</b><small data-i18n="carbs">—</small></span>
+      <span class="cf f"><b id="macro-f">0</b><small data-i18n="fat">—</small></span>
+    </div>
+  </div>
+
+  <div id="penalty-box" class="penalty hidden"></div>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="food" data-i18n="tab_food">—</button>
+    <button class="tab" data-tab="workout" data-i18n="tab_workout">—</button>
+    <button class="tab" data-tab="history" data-i18n="tab_history">—</button>
+  </nav>
+
+  <!-- Food tab -->
+  <div class="tab-panel" id="tab-food">
+    <div class="list" id="meal-list"></div>
+    <button id="add-meal" class="primary full" data-i18n="add_meal">—</button>
+  </div>
+
+  <!-- Workout tab (plan + logged merged) -->
+  <div class="tab-panel hidden" id="tab-workout">
+    <div id="plan-section" class="sub-section">
+      <div class="sub-head">
+        <span data-i18n="planned_today">—</span>
+        <button id="add-plan" class="chip-btn" data-i18n="plan_cta">—</button>
+      </div>
+      <div class="list" id="plan-list"></div>
+    </div>
+
+    <div class="sub-section">
+      <div class="sub-head"><span data-i18n="logged_workouts">—</span></div>
+      <div class="list" id="workout-list"></div>
+    </div>
+
+    <button id="add-workout" class="primary full" data-i18n="add_workout">—</button>
+  </div>
+
+  <!-- History tab -->
+  <div class="tab-panel hidden" id="tab-history">
+    <div id="weight-trend" class="trend-card"></div>
+
+    <h3 class="section-h" data-i18n="section_activity">—</h3>
+    <div class="heatmap-tabs">
+      <button class="htab active" data-heat="track" data-i18n="heat_track">—</button>
+      <button class="htab" data-heat="workout" data-i18n="heat_workout">—</button>
+    </div>
+    <div id="heatmap-wrap"></div>
+    <div class="heatmap-legend">
+      <span data-i18n="heat_legend_low">—</span>
+      <span class="lg-cell lv0"></span>
+      <span class="lg-cell lv1"></span>
+      <span class="lg-cell lv2"></span>
+      <span class="lg-cell lv3"></span>
+      <span class="lg-cell lv4"></span>
+      <span data-i18n="heat_legend_high">—</span>
+    </div>
+
+    <h3 class="section-h" data-i18n="section_photos">—</h3>
+    <div id="photo-gallery" class="photo-gallery"></div>
+
+    <h3 class="section-h" data-i18n="section_daily_log">—</h3>
+    <div id="history-list" class="list"></div>
+  </div>
+</section>
+
+<!-- Settings modal -->
+<div id="settings-modal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2 data-i18n="settings">—</h2>
+      <button id="close-settings" class="icon-btn" aria-label="Close">✕</button>
+    </div>
+
+    <nav class="set-tabs">
+      <button class="set-tab active" data-stab="profile" data-i18n="set_tab_profile">—</button>
+      <button class="set-tab" data-stab="favs" data-i18n="set_tab_favs">—</button>
+      <button class="set-tab" data-stab="advanced" data-i18n="set_tab_advanced">—</button>
+    </nav>
+
+    <!-- Profile tab -->
+    <div class="set-panel" data-panel="profile">
+      <div class="row">
+        <label><span data-i18n="weight_kg">—</span> <input id="set-weight" type="number" inputmode="decimal" step="0.1" /></label>
+        <label><span data-i18n="age">—</span> <input id="set-age" type="number" inputmode="numeric" /></label>
+      </div>
+      <div class="row">
+        <label><span data-i18n="height_cm">—</span> <input id="set-height" type="number" inputmode="numeric" /></label>
+        <label><span data-i18n="activity">—</span>
+          <select id="set-activity">
+            <option value="1.2" data-i18n="act_1">—</option>
+            <option value="1.375" data-i18n="act_2">—</option>
+            <option value="1.55" data-i18n="act_3">—</option>
+            <option value="1.725" data-i18n="act_4">—</option>
+            <option value="1.9" data-i18n="act_5">—</option>
+          </select>
+        </label>
+      </div>
+      <label><span data-i18n="gender">—</span>
+        <select id="set-gender">
+          <option value="male" data-i18n="male">—</option>
+          <option value="female" data-i18n="female">—</option>
+        </select>
+      </label>
+
+      <h3 data-i18n="goal_section">—</h3>
+      <div class="row">
+        <label><span data-i18n="target_weight">—</span> <input id="set-target" type="number" inputmode="decimal" step="0.1" /></label>
+        <label><span data-i18n="target_weeks">—</span> <input id="set-weeks" type="number" inputmode="numeric" min="1" max="260" /></label>
+      </div>
+      <div id="set-feedback" class="goal-feedback"></div>
+      <label><span data-i18n="protein_target_label">—</span> <input id="set-protein" type="number" inputmode="numeric" /></label>
+      <p class="muted tiny" data-i18n="protein_hint">—</p>
+      <button id="set-save" class="primary" data-i18n="save_profile">—</button>
+    </div>
+
+    <!-- Favorites tab -->
+    <div class="set-panel hidden" data-panel="favs">
+      <h3 data-i18n="favs_foods">—</h3>
+      <div id="fav-food-list" class="fav-list"></div>
+      <div class="row">
+        <input id="fav-food-name" data-i18n-placeholder="food_name" />
+        <input id="fav-food-kcal" type="number" inputmode="numeric" data-i18n-placeholder="kcal" />
+      </div>
+      <button id="fav-food-add" class="ghost" data-i18n="add_fav_food">—</button>
+
+      <h3 data-i18n="favs_exercises">—</h3>
+      <div id="fav-ex-list" class="fav-list"></div>
+      <div class="row">
+        <input id="fav-ex-name" data-i18n-placeholder="exercise_name" />
+        <input id="fav-ex-met" type="number" inputmode="decimal" step="0.1" placeholder="MET" />
+      </div>
+      <p class="muted tiny" data-i18n="fav_met_hint">—</p>
+      <button id="fav-ex-add" class="ghost" data-i18n="add_fav_ex">—</button>
+    </div>
+
+    <!-- Advanced tab -->
+    <div class="set-panel hidden" data-panel="advanced">
+      <h3 data-i18n="language">—</h3>
+      <div class="lang-toggle">
+        <button class="lang-btn" data-lang="vi">Tiếng Việt</button>
+        <button class="lang-btn" data-lang="en">English</button>
+      </div>
+
+      <h3 data-i18n="usda_key_label">—</h3>
+      <input id="set-usda-key" type="text" autocomplete="off" spellcheck="false" placeholder="DEMO_KEY" />
+      <p class="muted tiny" data-i18n="usda_key_hint">—</p>
+
+      <h3 data-i18n="reset_debt_section">—</h3>
+      <p class="muted tiny" data-i18n="reset_debt_desc">—</p>
+      <div id="reset-history" class="muted tiny" style="margin-bottom:10px"></div>
+      <button id="reset-debt" class="ghost full" data-i18n="reset_debt_btn">—</button>
+
+      <h3 style="color:#ff6b6b" data-i18n="danger">—</h3>
+      <button id="reset-data" class="danger" data-i18n="wipe_all">—</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dialog -->
+<div id="dialog" class="modal hidden">
+  <div class="modal-card">
+    <h2 id="dialog-title">—</h2>
+    <div id="dialog-body"></div>
+    <div class="row">
+      <button id="dialog-cancel" class="ghost" data-i18n="cancel">—</button>
+      <button id="dialog-ok" class="primary" data-i18n="ok">—</button>
+    </div>
+  </div>
+</div>
+
+<script src="i18n.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
