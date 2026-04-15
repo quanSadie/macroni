@@ -2,7 +2,7 @@
 
 **Live**: https://quansadie.github.io/macroni/
 
-PWA theo dõi calo với carry-over kỷ luật. Chạy offline, cài lên home screen Android như app native. Dữ liệu lưu ở localStorage (không gửi đi đâu).
+PWA theo dõi calo. Chạy offline, cài lên home screen Android. Dữ liệu lưu ở localStorage.
 
 ## Tính năng
 
@@ -30,27 +30,11 @@ python -m http.server 8000
 
 Service Worker chỉ hoạt động qua `http(s)://` hoặc `localhost`, không dùng `file://`.
 
-## Deploy (free)
-
-Cách nhanh nhất — kéo thả folder này:
-
-- **Netlify Drop**: https://app.netlify.com/drop
-- **Vercel**: `npx vercel` trong folder
-- **GitHub Pages**: push lên repo, bật Pages cho branch
-
 ## Cài lên Android (để dùng như app)
 
 1. Mở URL đã deploy bằng Chrome trên Android
 2. Chrome sẽ hiện banner "Thêm vào Màn hình chính" (hoặc menu `⋮` → "Install app")
 3. App xuất hiện trên home screen — mở full-screen, chạy offline, icon riêng
-
-## Widget thực sự trên home screen
-
-PWA pinned trên Android không phải true widget (vẫn phải tap để mở). Nếu muốn số kcal còn lại hiện trực tiếp trên home screen:
-
-- Dùng **KWGT** (Android widget engine) đọc JSON từ một endpoint
-- Có thể expose dữ liệu từ app này qua một Cloudflare Worker + fetch từ KWGT
-- Phức tạp hơn, chưa tích hợp sẵn trong bản này
 
 ## Công thức
 
